@@ -1,31 +1,29 @@
-// script.js
-
-// Trip Budget Calculator
-document.getElementById("budget-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const totalCost = parseFloat(document.getElementById("total-cost").value);
-    const tripDuration = parseInt(document.getElementById("trip-duration").value);
-
-    if (totalCost > 0 && tripDuration > 0) {
-        const dailyBudget = (totalCost / tripDuration).toFixed(2);
-        document.getElementById("budget-result").textContent = `Daily Budget: $${dailyBudget}`;
-    } else {
-        document.getElementById("budget-result").textContent = "Please enter valid values.";
-    }
+document.getElementById("calculate-distance").addEventListener("click", () => {
+    const start = document.getElementById("start-location").value;
+    const end = document.getElementById("end-location").value;
+    alert(`This will calculate distance from ${start} to ${end} (API integration needed).`);
 });
 
-// Carbon Footprint Offset Calculator
-document.getElementById("carbon-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const flightDistance = parseFloat(document.getElementById("flight-distance").value);
-    const offsetRate = parseFloat(document.getElementById("offset-rate").value);
-
-    if (flightDistance > 0 && offsetRate > 0) {
-        const offsetCost = (flightDistance * offsetRate).toFixed(2);
-        document.getElementById("carbon-result").textContent = `Carbon Offset Cost: $${offsetCost}`;
-    } else {
-        document.getElementById("carbon-result").textContent = "Please enter valid values.";
-    }
+document.getElementById("convert-currency").addEventListener("click", async () => {
+    const amount = document.getElementById("amount").value;
+    const from = document.getElementById("from-currency").value;
+    const to = document.getElementById("to-currency").value;
+    const convertedAmount = await convertCurrency(amount, from, to);
+    document.getElementById("conversion-result").innerText = `Converted Amount: ${convertedAmount} ${to}`;
 });
+
+// Example Currency Converter function
+async function convertCurrency(amount, fromCurrency, toCurrency) {
+    const apiKey = "YOUR_API_KEY";
+    const url = `https://open.er-api.com/v6/latest/${fromCurrency}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const rate = data.rates[toCurrency];
+        const converted = amount * rate;
+        return converted.toFixed(2);
+    } catch (error) {
+        console.error(error);
+        return "Error fetching rates!";
+    }
+}
